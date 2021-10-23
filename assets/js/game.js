@@ -4,7 +4,7 @@ var randomNumber = function (min, max) {
   return value;
 };
 
-var fightOrSkip = function() {
+var fightOrSkip = function () {
   // ask player if they'd like to fight or run
   var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
 
@@ -25,73 +25,88 @@ var fightOrSkip = function() {
     if (confirmSkip) {
       window.alert(playerInfo.name + ' has decided to skip this fight. Goodbye!');
       playerInfo.money = Math.max(0, playerInfo.money - 10);
-      
+
       // return true if plater wants to leave
       return true;
     }
   }
-}
+  return false;
+};
 
 // fight function
 var fight = function (enemy) {
   // Keeps track of who goes first
   var isPlayerTurn = true;
-    // changes turn order randomly
-    if (Math.random() > .5) {
-      isPlayerTurn = false;
-    }
+  // changes turn order randomly
+  if (Math.random() > .5) {
+    isPlayerTurn = false;
+  }
 
   while (playerInfo.health > 0 && enemy.health > 0) {
     if (isPlayerTurn) {
-    // ask player if they'd like to fight or skip using fightOrSkip function
-    if (fightOrSkip()) {
-      // if true, leave fight by breaking loop
-      break;
-    }
+      // ask player if they'd like to fight or skip using fightOrSkip function
+      if (fightOrSkip()) {
+        // if true, leave fight by breaking loop
+        break;
+      }
 
-    // generate random damage value based on player's attack power
-    var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
+      // generate random damage value based on player's attack power
+      var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
 
-    // remove enemy's health by subtracting the amount we set in the damage variable
-    enemy.health = Math.max(0, enemy.health - damage);
-    console.log(
-      playerInfo.name + ' attacked ' + enemy.name + '. ' + enemy.name + ' now has ' + enemy.health + ' health remaining.'
-    );
+      // remove enemy's health by subtracting the amount we set in the damage variable
+      enemy.health = Math.max(0, enemy.health - damage);
+      console.log(
+        playerInfo.name +
+        ' attacked ' +
+        enemy.name +
+        '. ' +
+        enemy.name +
+        ' now has ' +
+        enemy.health +
+        ' health remaining.'
+      );
 
-    // check enemy's health
-    if (enemy.health <= 0) {
-      window.alert(enemy.name + ' has died!');
+      // check enemy's health
+      if (enemy.health <= 0) {
+        window.alert(enemy.name + ' has died!');
 
-      // award player money for winning
-      playerInfo.money = playerInfo.money + 20;
+        // award player money for winning
+        playerInfo.money = playerInfo.money + 20;
 
-      // leave while() loop since enemy is dead
-      break;
+        // leave while() loop since enemy is dead
+        break;
+      } else {
+        window.alert(enemy.name + ' still has ' + enemy.health + ' health left.');
+      }
+      // player gets attacked first
     } else {
-      window.alert(enemy.name + ' still has ' + enemy.health + ' health left.');
-    }
-    // player gets attacked first
-  } else {
       var damage = randomNumber(enemy.attack - 3, enemy.attack);
-    
-    // remove player's health by subtracting the amount we set in the damage variable
-    playerInfo.health = Math.max(0, playerInfo.health - enemy.attack);
-    console.log(
-      enemy.name + ' attacked ' + playerInfo.name + '. ' + playerInfo.name + ' now has ' + playerInfo.health + ' health remaining.'
-    );
 
-    // check player's health
-    if (playerInfo.health <= 0) {
-      window.alert(playerInfo.name + ' has died!');
-      // leave while() loop if player is dead
-      break;
-    } else {
-      window.alert(playerInfo.name + ' still has ' + playerInfo.health + ' health left.');
+      // remove player's health by subtracting the amount we set in the damage variable
+      playerInfo.health = Math.max(0, playerInfo.health - damage);
+      console.log(
+        enemy.name +
+        ' attacked ' +
+        playerInfo.name +
+        '. ' +
+        playerInfo.name +
+        ' now has ' +
+        playerInfo.health +
+        ' health remaining.'
+      );
+
+      // check player's health
+      if (playerInfo.health <= 0) {
+        window.alert(playerInfo.name + ' has died!');
+        // leave while() loop if player is dead
+        break;
+      } else {
+        window.alert(playerInfo.name + ' still has ' + playerInfo.health + ' health left.');
+      }
     }
+    // switch turn order for next round
+    isPlayerTurn = !isPlayerTurn;
   }
-  // switch turn order for next round
-  isPlayerTurn = !isPlayerTurn;
-  }  
 };
 
 // function to start a new game
@@ -108,6 +123,8 @@ var startGame = function () {
       var pickedEnemyObj = enemyInfo[i];
 
       pickedEnemyObj.health = randomNumber(40, 60);
+
+      console.log(pickedEnemyObj);
 
       fight(pickedEnemyObj);
 
@@ -131,10 +148,10 @@ var startGame = function () {
 
 // function to end the entire game
 var endGame = function () {
-  window.alert("The game has now ended. Let's see how you did!")
+  window.alert("The game has now ended. Let's see how you did!");
 
   // check lovalStorage for high schore, if it's not there, use 0
-  var highScore = localStorafe.getItem("highscore");
+  var highScore = localStorage.getItem("highscore");
   if (highScore === null) {
     highScore = 0;
   }
@@ -143,7 +160,7 @@ var endGame = function () {
     localStorage.setItem("highscore", playerInfo.money);
     localStorage.setItem("name", playerInfo.name);
 
-    alert(playerInfo.name + " now has the high score of " + playerInfo.refillHealth.money + "!");
+    alert(playerInfo.name + " now has the high score of " + playerInfo.money + "!");
   }
   else {
     alert(player.Info.name + " did not beat the high score of " + highScore + ". Maybe next time!");
@@ -188,10 +205,10 @@ var shop = function () {
 };
 
 // function to set name
-var getPlayerName = function() {
+var getPlayerName = function () {
   var name = "";
 
-  while (name ==="" || name === null) {
+  while (name === "" || name === null) {
     name = prompt("What is your robot's name?");
   }
 
